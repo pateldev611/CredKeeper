@@ -1,0 +1,92 @@
+{
+  "name": "credkeeper",
+  "displayName": "CredKeeper: Secret Leak Detection for Data Teams",
+  "description": "Local-only secret leak detection for data teams: notebooks, .env discipline, pre-commit gate.",
+  "version": "0.1.0",
+  "publisher": "tredence-csw-hackathon",
+  "icon": "icon.png",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18",
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Linters",
+    "Other"
+  ],
+  "keywords": [
+    "secrets",
+    "security",
+    "jupyter",
+    "notebook",
+    "dotenv",
+    "pre-commit"
+  ],
+  "main": "./dist/src/extension/extension.js",
+  "bin": {
+    "credkeeper": "dist/src/cli/index.js"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": "limited",
+      "description": "In Restricted Mode CredKeeper only scans. Repository config (.credkeeper.json), env-aware mode and quick fixes are disabled.",
+      "restrictedConfigurations": [
+        "credkeeper.showLowSeverity"
+      ]
+    }
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "credkeeper.scanWorkspace",
+        "title": "CredKeeper: Scan Workspace"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "credkeeperFindings",
+          "name": "CredKeeper Findings"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "credkeeperFindings",
+        "contents": "No findings yet. Open files are scanned as you type.\n[Scan Workspace](command:credkeeper.scanWorkspace)"
+      }
+    ],
+    "configuration": {
+      "title": "CredKeeper",
+      "properties": {
+        "credkeeper.showLowSeverity": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show low-severity findings (high-entropy strings that may not be secrets)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "npm run build && node scripts/run-tests.js",
+    "harness": "npm run build && node scripts/harness-report.js",
+    "package": "npm run build && vsce package --allow-missing-repository --out credkeeper.vsix"
+  },
+  "devDependencies": {
+    "@types/node": "20.16.11",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.2.1",
+    "typescript": "5.6.3"
+  },
+  "overrides": {
+    "@azure/msal-node": "7.1.0"
+  },
+  "dependencies": {
+    "npm": "^11.21.1",
+    "test": "^3.3.0"
+  }
+}
